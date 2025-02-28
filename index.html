@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ESP32 PIR Sensor</title>
+<style>
+  body { font-family: Arial, sans-serif; text-align: center; background: linear-gradient(135deg, #2193b0, #6dd5ed); color: white; margin: 0; padding: 0; }
+  h1 { margin-top: 20px; }
+  .status { font-size: 24px; font-weight: bold; padding: 20px; border-radius: 10px; display: inline-block; }
+  .active { background-color: rgba(0, 255, 0, 0.135); color: rgb(1, 132, 1); }
+  .inactive { background-color: rgba(255,0,0,0.2); color: red; }
+  .history-container { width: 80%; max-width: 600px; margin: 20px auto; padding: 10px; background: rgba(0, 0, 0, 0.3); border-radius: 10px; max-height: 300px; overflow-y: auto; text-align: left; }
+  p { margin: 5px 0; }
+</style>
+</head>
+<body>
+  <h1>ESP32 PIR Sensor</h1>
+  <div id="status" class="status">Cargando...</div>
+  <h3>Historial de eventos:</h3>
+  <div class="history-container" id="history">Cargando...</div>
+
+  <script>
+  function updateData() {
+    fetch('/data')
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById("status").innerHTML = data.motion ? 
+          "🚨 <b style='color: lime;'>MOVIMIENTO DETECTADO</b>" : 
+          "✅ <b style='color: red;'>SIN MOVIMIENTO</b>";
+        document.getElementById("status").className = data.motion ? "status active" : "status inactive";
+        document.getElementById("history").innerHTML = data.history;
+      });
+  }
+  setInterval(updateData, 2000);
+  updateData();
+  </script>
+</body>
+</html>
